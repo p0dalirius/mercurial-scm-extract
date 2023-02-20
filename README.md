@@ -18,14 +18,15 @@
 
 ```
 $ ./mercurial-scm-extract.py -h
-mercurial-scm-extract.py v1.0 - by @podalirius_
+mercurial-scm-extract.py v1.1 - by @podalirius_
 
-usage: mercurial-scm-extract.py [-h] -u URL -d DIR [-v]
+usage: mercurial-scm-extract.py [-h] -u URL -d DIR [-k] [-v]
 
 options:
   -h, --help         show this help message and exit
   -u URL, --url URL  Target URL.
   -d DIR, --dir DIR  Directory where to save dumped files.
+  -k, --insecure     Allow insecure server connections when using SSL (default: False)
   -v, --verbose      Verbose mode. (default: False)
 ```
 
