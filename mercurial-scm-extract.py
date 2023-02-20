@@ -9,7 +9,8 @@ import os
 import requests
 
 
-VERSION = "1.0"
+VERSION = "1.1"
+
 
 
 class MercurialSCMExtractor(object):
@@ -82,7 +83,7 @@ class MercurialSCMExtractor(object):
 
         print("[+] All done!")
 
-    def __dump_files(self, url, files):
+    def __dump_files(self, url, files, verbose=False):
         def convert_filesize(contentsize):
             units = ['B', 'kB', 'MB', 'GB', 'TB', 'PB']
             for k in range(len(units)):
@@ -97,10 +98,13 @@ class MercurialSCMExtractor(object):
                 if not os.path.exists(os.path.dirname(dumped_file)):
                     os.makedirs(os.path.dirname(dumped_file), exist_ok=True)
                 size = convert_filesize(int(r.headers["Content-Length"]))
-                print("  | [>] (%8s) Dumped: %s" % (size, file))
+                print("  | \x1b[92m[+] (%9s) Dumped: %s\x1b[0m" % (size, file))
                 f = open(dumped_file, "wb")
                 f.write(r.content)
                 f.close()
+            else:
+                if self.verbose:
+                    print("  | \x1b[91m[!] (==error==) Could not dump: %s\x1b[0m" % file)
 
 
 def parseArgs():
@@ -109,6 +113,9 @@ def parseArgs():
     parser = argparse.ArgumentParser(description="")
     parser.add_argument("-u", "--url", default=None, required=True, help='Target URL.')
     parser.add_argument("-d", "--dir", default=None, required=True, help='Directory where to save dumped files.')
+
+    parser.add_argument("-k", "--insecure", action="store_true", default=False, help="Allow insecure server connections when using SSL (default: False)")
+
     parser.add_argument("-v", "--verbose", default=False, action="store_true", help='Verbose mode. (default: False)')
     return parser.parse_args()
 
@@ -116,8 +123,24 @@ def parseArgs():
 if __name__ == '__main__':
     options = parseArgs()
 
-    m = MercurialSCMExtractor(
-        dump_dir=options.dir,
-        verbose=options.verbose
-    )
-    m.extract(url=options.url)
+    if options.insecure:
+        # Disable warings of insecure connection for invalid certificates
+        requests.packages.urllib3.disable_warnings()
+        # Allow use of deprecated and weak cipher methods
+        requests.packages.urllib3.util.ssl_.DEFAULT_CIPHERS += ':HIGH:!DH:!aNULL'
+        try:
+            requests.packages.urllib3.contrib.pyopenssl.util.ssl_.DEFAULT_CIPHERS += ':HIGH:!DH:!aNULL'
+        except AttributeError:
+            pass
+
+    try:
+        r = requests.head(options.url, verify=False)
+    except Exception as e:
+        print("[!] Error: %s" % e)
+        print("[!] Target is down. Stopping ...")
+    else:
+        m = MercurialSCMExtractor(
+            dump_dir=options.dir,
+            verbose=options.verbose
+        )
+        m.extract(url=options.url)
