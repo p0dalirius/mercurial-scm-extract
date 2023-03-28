@@ -26,6 +26,7 @@ class MercurialSCMExtractor(object):
         "/.hg/store/undo",
         "/.hg/store/00manifest.i",
         "/.hg/store/00changelog.i",
+        "/.hg/store/requires",
         "/.hg/undo.backup.dirstate",
         "/.hg/undo.branch",
         "/.hg/last-message.txt",
