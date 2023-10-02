@@ -1,4 +1,4 @@
-# mercurial-scm-extract
+![](./.github/banner.png)
 
 <p align="center">
     A tool to extract and dump files of mercurial SCM exposed on a web server.
