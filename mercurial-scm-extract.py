@@ -109,7 +109,7 @@ class MercurialSCMExtractor(object):
 
 
 def parseArgs():
-    print("mercurial-scm-extract.py v%s - by @podalirius_\n" % VERSION)
+    print("mercurial-scm-extract.py v%s - by Remi GASCOU (Podalirius)\n" % VERSION)
 
     parser = argparse.ArgumentParser(description="")
     parser.add_argument("-u", "--url", default=None, required=True, help='Target URL.')

@@ -18,7 +18,7 @@
 
 ```
 $ ./mercurial-scm-extract.py -h
-mercurial-scm-extract.py v1.1 - by @podalirius_
+mercurial-scm-extract.py v1.1 - by Remi GASCOU (Podalirius)
 
 usage: mercurial-scm-extract.py [-h] -u URL -d DIR [-k] [-v]
 
